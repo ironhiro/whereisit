@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_around"
+        android:enabled="true"
+        android:icon="@drawable/ic_round_my_location_24px"
+        android:title="주변화장실"/>
+
+    <item
+        android:id="@+id/action_regional"
+        android:enabled="true"
+        android:icon="@drawable/ic_round_map_24px"
+        android:title="지역별화장실"/>
+
+    <item
+        android:id="@+id/action_add"
+        android:enabled="true"
+        android:icon="@drawable/ic_round_add_location_24px"
+        android:title="위치추가요청"/>
+</menu>
