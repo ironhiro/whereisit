@@ -88,11 +88,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // 3. 웹뷰 생성
         webView = (WebView)findViewById(R.id.webView);
-        webView.loadUrl("file:///android_asset/Main.html");
+
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
         webView.setVerticalScrollBarEnabled(false);
         webView.setBackgroundColor(0);
+
+        webView.loadUrl("https://ironhiro.github.io/whereisit/");
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
