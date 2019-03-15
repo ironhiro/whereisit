@@ -2,37 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/account"
-            android:icon="@drawable/ic_round_account_circle_24px"
-            android:title="계정"
+            android:id="@+id/male"
+
+            android:title="남자"
             />
         <item
-            android:id="@+id/star"
-            android:icon="@drawable/ic_round_star_rate_18px"
-            android:title="즐겨찾기"
+            android:id="@+id/female"
+            android:title="여자"
             />
         <item
-            android:id="@+id/cart"
-            android:icon="@drawable/ic_round_shopping_cart_24px"
-            android:title="장바구니"
-            />
-    </group>
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/bug_report"
-            android:icon="@drawable/ic_round_bug_report_24px"
-            android:title="버그 리포트"
+            android:id="@+id/handi"
+            android:title="장애인용"
             />
         <item
-            android:id="@+id/setting"
-            android:icon="@drawable/ic_round_settings_24px"
-            android:title="설정"
+            android:id="@+id/squat"
+            android:title="좌변기"
             />
         <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_round_exit_to_app_24px"
-            android:title="나가기"
+            android:id="@+id/bowl"
+            android:title="양변기"
             />
+
     </group>
 
 

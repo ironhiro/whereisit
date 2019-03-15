@@ -1,4 +1,4 @@
-package com.example.mytoilet;
+package com.mytoilet.whereisit;
 
 public class Toilet {
     private int toilet_no;

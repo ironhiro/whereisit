@@ -19,4 +19,6 @@
         <item name="android:background">#6048D2</item>
         <item name="android:textSize">8dp</item>
     </style>
+
+
 </resources>

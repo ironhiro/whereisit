@@ -1,52 +1,56 @@
-package com.example.mytoilet;
+package com.mytoilet.whereisit;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.Toolbar;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mytoilet.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import net.daum.mf.map.api.CalloutBalloonAdapter;
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     Toolbar myToolbar;
-    MapView mapView;
+
     TextView mTitle;
-    MapPOIItem marker;
+    WebView webView;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-    FloatingActionButton fab;
-    final int MESSAGE_PERMISSION_GRANTED = 101;
-    final int MESSAGE_PERMISSION_DENIED = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,21 +86,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        // 3. 맵뷰 생성
-        mapView = new MapView(this);
-        marker = new MapPOIItem();
-        marker.setSelectedMarkerType(MapPOIItem.MarkerType.BluePin);
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-
-
+        // 3. 웹뷰 생성
+        webView = (WebView)findViewById(R.id.webView);
+        webView.loadUrl("file:///android_asset/Main.html");
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setBackgroundColor(0);
         // 4. Navigation Drawer 생성
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
     }
-
-
 
 
     @Override
@@ -108,10 +109,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
@@ -120,16 +119,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
-    {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         return false;
     }
 
-    public void onFabClick(View v)
-    {
+    public void onFabClick(View v) {
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
+                //권한 승인 시
+                final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    return;
+                }
+                Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        1000,
+                        0,
+                        locationListener);
 
             }
 
@@ -149,7 +160,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
                 .check();
         }
+    final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
 
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+
+
+
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
 }
 
