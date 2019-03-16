@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.Toolbar;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setHorizontalScrollBarEnabled(false);
         webView.setVerticalScrollBarEnabled(false);
         webView.setBackgroundColor(0);
-
+        webView.addJavascriptInterface(new WebAppInterface(this),"Android");
         webView.loadUrl("https://ironhiro.github.io/whereisit/");
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -103,7 +104,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public class WebAppInterface {
+        Context mContext;
 
+        /** Instantiate the interface and set the context */
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        /** Show a toast from the web page */
+        @JavascriptInterface
+        public void showToast(String toast) {
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //return super.onCreateOptionsMenu(menu);

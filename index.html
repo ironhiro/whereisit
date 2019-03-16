@@ -13,6 +13,10 @@
     <div id="map"></div>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=fbaa43721e9bd6b845d4c8333c205526"></script>
     <script>
+        function init(){
+            var result = JSON.parse(Android.getSystemData());
+            alert(result.myPhoneNum + " / " + result.pushToken);
+        }
 		var container = document.getElementById('map');
 		var options = {
 			center: new daum.maps.LatLng(33.450701, 126.570667),
@@ -20,6 +24,7 @@
 		};
 
 		var map = new daum.maps.Map(container, options);
+		Android.showToast("테스트");
 	</script>
 </body>
 </html>
