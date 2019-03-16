@@ -97,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setVerticalScrollBarEnabled(false);
         webView.setBackgroundColor(0);
         webView.addJavascriptInterface(new WebAppInterface(this),"Android");
+
         webView.loadUrl("https://ironhiro.github.io/whereisit/");
+
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void onFabClick(View v) {
+
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -154,12 +157,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
-
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         1000,
                         0,
                         locationListener);
-
+                webView.loadUrl("javascript:showCurrentLocation("+longitude+","+latitude+"");
             }
 
             @Override
