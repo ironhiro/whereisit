@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -46,12 +47,15 @@ import net.daum.mf.map.api.MapView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private final Handler handler = new Handler();
     Toolbar myToolbar;
 
     TextView mTitle;
     WebView webView;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         1000,
                         0,
                         locationListener);
-                webView.loadUrl("javascript:showCurrentLocation("+longitude+","+latitude+"");
+                webView.loadUrl("javascript:showCurrentLocation('"+longitude+"','"+latitude+"')");
+
             }
 
             @Override
@@ -182,12 +187,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-
-
-
+            webView.loadUrl("javascript:showCurrentLocation('"+longitude+"'"+latitude+"'");
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
