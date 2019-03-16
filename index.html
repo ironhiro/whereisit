@@ -14,8 +14,7 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=fbaa43721e9bd6b845d4c8333c205526"></script>
     <script>
         function init(){
-            var result = JSON.parse(Android.getSystemData());
-            alert(result.myPhoneNum + " / " + result.pushToken);
+            Android.showToast("테스트");
         }
 		var container = document.getElementById('map');
 		var options = {
@@ -23,8 +22,9 @@
 			level: 3
 		};
 
+
 		var map = new daum.maps.Map(container, options);
-		Android.showToast("테스트");
+
 	</script>
 </body>
 </html>
