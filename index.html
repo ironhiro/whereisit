@@ -19,7 +19,7 @@
 			    level: 3
 		    };
             function showCurrentLocation(lat,lon){
-                var locLocation = new daum.maps.Lating(lat,lon),
+                var locLocation = new daum.maps.LatLng(lat,lon),
                     message = '<div style="padding:5px;">여기에 계신가요?!</div>';
                 displayMarker(locLocation,message);
             }
