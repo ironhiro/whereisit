@@ -86,8 +86,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.action_around:
                         break;
                     case R.id.action_regional:
+                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this);
+                        region_dlg.openDialog();
                         break;
                     case R.id.action_add:
+                        AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
+                        request_dlg.openDialog();
                         break;
 
                 }
@@ -183,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         1000,
                         0,
                         locationListener);
-                webView.loadUrl("javascript:showCurrentLocation('"+longitude+"','"+latitude+"')");
+                webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
 
             }
 
@@ -207,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            webView.loadUrl("javascript:showCurrentLocation('"+longitude+"'"+latitude+"'");
+            webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {

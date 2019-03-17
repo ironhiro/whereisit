@@ -1,6 +1,7 @@
 package com.mytoilet.whereisit;
 
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -13,21 +14,16 @@ import java.io.IOException;
 public class FormatConverter extends Exception
 {
     JSONParser parser = new JSONParser();
-
+    String str = "";
     public void convertJSON(String fileName)
     {
 
         try
         {
-            Object obj = parser.parse(new FileReader(fileName));
-            JSONObject jsonObject = (JSONObject)obj;
+            JSONArray jsonArray = (JSONArray)parser.parse(str);
 
         }
         catch (ParseException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="300dp"
-    android:layout_height="300dp">
+    android:layout_height="300dp"
+    android:background="#EBECF0"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:text="화장실 추가 신청"
+        android:gravity="center"
+        android:fontFamily="@font/font"
+        android:textSize="20dp"
+        android:background="#6048D2"
+        android:textColor="#FFFFFF">
+    </TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:orientation="horizontal">
 
-</android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:background="#6048D2">
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:text="확인"
+            android:textSize="20dp"
+            android:fontFamily="@font/font"
+            android:textColor="#FFFFFF"
+            android:layout_weight="1">
+
+
+        </Button>
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:text="취소"
+            android:textSize="20dp"
+            android:fontFamily="@font/font"
+            android:textColor="#FFFFFF"
+            android:layout_weight="1">
+
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>

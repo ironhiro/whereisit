@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/male"
-
             android:title="남자"
+            app:actionLayout="@layout/action_switch"
             />
         <item
             android:id="@+id/female"
             android:title="여자"
+            app:actionLayout="@layout/action_switch"
             />
         <item
             android:id="@+id/handi"
             android:title="장애인용"
+            app:actionLayout="@layout/action_switch"
             />
         <item
             android:id="@+id/squat"
             android:title="좌변기"
+            app:actionLayout="@layout/action_switch"
             />
         <item
             android:id="@+id/bowl"
             android:title="양변기"
+            app:actionLayout="@layout/action_switch"
             />
 
     </group>
