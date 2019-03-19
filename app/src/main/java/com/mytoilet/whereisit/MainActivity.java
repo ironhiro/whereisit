@@ -137,10 +137,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 5. Parsing할 json load
         try {
             converter = new FormatConverter();
+            converter.loadJSON(MainActivity.this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        converter.loadJSON(MainActivity.this);
+
     }
 
     public class WebAppInterface {
