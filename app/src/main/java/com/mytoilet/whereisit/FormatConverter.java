@@ -35,7 +35,8 @@ public class FormatConverter extends Exception
 {
     BufferedInputStream in;
 
-    public FormatConverter() throws IOException {
+    public FormatConverter() throws IOException
+    {
         SimpleDateFormat format = new SimpleDateFormat("dd", Locale.KOREA);
         Date date = new Date();
         String currentDay = format.format(date);

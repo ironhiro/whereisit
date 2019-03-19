@@ -58,9 +58,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private final Handler handler = new Handler();
     Toolbar myToolbar;
-
     TextView mTitle;
     WebView webView;
     DrawerLayout drawerLayout;
