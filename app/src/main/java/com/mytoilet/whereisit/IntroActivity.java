@@ -27,7 +27,9 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         handler.postDelayed(r, 4000); // 4초 뒤에 Runnable 객체 수행
+
     }
 
     @Override

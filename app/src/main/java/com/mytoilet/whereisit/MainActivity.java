@@ -48,7 +48,14 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final Handler handler = new Handler();
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     WebView webView;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-
+    FormatConverter converter;
 
 
     @Override
@@ -129,7 +136,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-
+        // 5. Parsing할 json load
+        try {
+            converter = new FormatConverter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        converter.loadJSON(MainActivity.this);
     }
 
     public class WebAppInterface {
@@ -207,12 +220,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
                 .check();
         }
-    final LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
-        }
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
+            }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
@@ -222,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public void onProviderDisabled(String provider) {
         }
-    };
+        };
 
 }
 
