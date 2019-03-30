@@ -5,70 +5,54 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.support.v7.widget.Toolbar;
-import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytoilet.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.skt.Tmap.TMapCircle;
+import com.skt.Tmap.TMapMarkerItem;
+import com.skt.Tmap.TMapPoint;
+import com.skt.Tmap.TMapView;
 
-import net.daum.mf.map.api.CalloutBalloonAdapter;
-import net.daum.mf.map.api.CameraUpdateFactory;
-import net.daum.mf.map.api.MapCircle;
-import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPointBounds;
-import net.daum.mf.map.api.MapView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     Toolbar myToolbar;
     TextView mTitle;
-    WebView webView;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-    FormatConverter converter;
-
+    FileHandler converter;
+    TMapView tmapview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tmapview = new TMapView(this);
+        tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -104,60 +88,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        // 3. 웹뷰 생성
-        webView = (WebView)findViewById(R.id.webView);
 
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url){
-                view.loadUrl(url);
-                return true;
-            }
-        });
-        webView.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage){
-                Log.e("Web",consoleMessage.message() + '\n' + consoleMessage.messageLevel() + '\n' + consoleMessage.sourceId());
-                return super.onConsoleMessage(consoleMessage);
-            }
-        });
-        webView.setBackgroundColor(0);
-        webView.addJavascriptInterface(new WebAppInterface(this),"Android");
-
-        webView.loadUrl("https://ironhiro.github.io/whereisit/");
+        // 3. Tmap 생성
+        RelativeLayout layout = (RelativeLayout)findViewById(R.id.tmap_layout);
+        layout.addView(tmapview);
 
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // 5. Parsing할 json load
         try {
-            converter = new FormatConverter();
-            converter.loadJSON(MainActivity.this);
+            converter = new FileHandler();
+                converter.loadJSON(MainActivity.this);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    public class WebAppInterface {
-        Context mContext;
 
-        /** Instantiate the interface and set the context */
-        WebAppInterface(Context c) {
-            mContext = c;
-        }
-
-        /** Show a toast from the web page */
-        @JavascriptInterface
-        public void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //return super.onCreateOptionsMenu(menu);
@@ -195,12 +144,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
+                TMapMarkerItem markerItem = new TMapMarkerItem();
+
+
+
+
+                TMapPoint tMapPoint = new TMapPoint(latitude,longitude);
+
+                // 마커 아이콘
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_my_marker);
+
+                markerItem.setIcon(bitmap); // 마커 아이콘 지정
+                markerItem.setPosition(0.5f, 1.0f); // 마커의 중심점을 중앙, 하단으로 설정
+                markerItem.setTMapPoint( tMapPoint ); // 마커의 좌표 지정
+                markerItem.setName("현재위치"); // 마커의 타이틀 지정
+                tmapview.addMarkerItem("markerItem1", markerItem); // 지도에 마커 추가
+                TMapCircle circle = new TMapCircle();
+                circle.setCenterPoint(tMapPoint);
+                circle.setRadius(1000);
+                circle.setCircleWidth(2);
+                circle.setLineColor(Color.BLUE);
+                circle.setAreaColor(Color.GRAY);
+                circle.setAreaAlpha(100);
+                tmapview.addTMapCircle("circle1", circle);
+                tmapview.setCenterPoint(longitude,latitude,true);
+
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         1000,
                         0,
                         locationListener);
-                webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
-
             }
 
             @Override
@@ -223,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onLocationChanged(Location location) {
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
-                webView.loadUrl("javascript:showCurrentLocation('"+latitude+"','"+longitude+"')");
+
             }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
