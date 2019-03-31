@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytoilet.R;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.skt.Tmap.TMapCircle;
@@ -45,12 +48,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView mTitle;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-    FileHandler converter;
+
     TMapView tmapview;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         tmapview = new TMapView(this);
         tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
         setContentView(R.layout.activity_main);
@@ -96,15 +102,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 4. Navigation Drawer 생성
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        // 5. Parsing할 json load
-        try {
-            converter = new FileHandler();
-                converter.loadJSON(MainActivity.this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
     }
+
 
 
     @Override
@@ -158,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 markerItem.setPosition(0.5f, 1.0f); // 마커의 중심점을 중앙, 하단으로 설정
                 markerItem.setTMapPoint( tMapPoint ); // 마커의 좌표 지정
                 markerItem.setName("현재위치"); // 마커의 타이틀 지정
+                markerItem.setCanShowCallout(true);
                 tmapview.addMarkerItem("markerItem1", markerItem); // 지도에 마커 추가
                 TMapCircle circle = new TMapCircle();
                 circle.setCenterPoint(tMapPoint);
@@ -167,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 circle.setAreaColor(Color.GRAY);
                 circle.setAreaAlpha(100);
                 tmapview.addTMapCircle("circle1", circle);
+
                 tmapview.setCenterPoint(longitude,latitude,true);
 
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
