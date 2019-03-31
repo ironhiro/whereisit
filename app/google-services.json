@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "751784707741",
+    "firebase_url": "https://whereisit-cb85c.firebaseio.com",
+    "project_id": "whereisit-cb85c",
+    "storage_bucket": "whereisit-cb85c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751784707741:android:b4fe3b4fea4039ae",
+        "android_client_info": {
+          "package_name": "com.mytoilet.whereisit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751784707741-oib38n4o6d80bo341hppmd3qr121s6c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mytoilet.whereisit",
+            "certificate_hash": "b79049e0405725135185453d0326da4780517c36"
+          }
+        },
+        {
+          "client_id": "751784707741-2lkatuucqpfk8e3ei39mnfdmjb0ebj84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mytoilet.whereisit",
+            "certificate_hash": "7e4e215dfd904a34a8bf067465cc63deb4b30e33"
+          }
+        },
+        {
+          "client_id": "751784707741-0of0qjcrr3k2c76m3ei35dv041u3i8m6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7cr2H1QNzqXVhuAXa-2f5lZQ3OfVCYTM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751784707741-0of0qjcrr3k2c76m3ei35dv041u3i8m6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
