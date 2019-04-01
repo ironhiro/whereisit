@@ -6,7 +6,7 @@ import android.view.Window;
 
 import com.example.mytoilet.R;
 
-public class AddRequestDialog {
+public class AddRequestDialog implements com.mytoilet.whereisit.Dialog {
     private Context context;
     public AddRequestDialog(Context context)
     {

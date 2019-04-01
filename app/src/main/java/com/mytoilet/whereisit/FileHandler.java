@@ -18,11 +18,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,25 +42,27 @@ public class FileHandler extends Exception
     BufferedInputStream in;
     DatabaseReference ref;
     DatabaseReference childRef;
+    DatabaseHandler<Toilet> handler;
+    InputStream fin;
     public FileHandler() throws IOException
     {
 
         SimpleDateFormat format = new SimpleDateFormat("dd", Locale.KOREA);
         Date date = new Date();
         String currentDay = format.format(date);
-        System.out.println(currentDay);
-        if(currentDay.equals("25"))
+
+        if(Integer.parseInt(currentDay) >= 25 && Integer.parseInt(currentDay) <= 31)
         {
-            in = new BufferedInputStream(new URL("http://data.go.kr/widg/dsi/irosGnrlDataSetManage/downloadDataStoreToJson.do?id=uddi:fcnqnzns-yl87-yndq-imli-ujjgofjotxcf&fileName=%EC%A0%84%EA%B5%AD%ED%99%94%EC%9E%A5%EC%8B%A4%ED%91%9C%EC%A4%80%EB%8D%B0%EC%9D%B4%ED%84%B0").openStream());
+            jsonUpdater();
         }
     }
 
     void loadJSON(Context context) throws IOException {
         ref = FirebaseDatabase.getInstance().getReference();
         childRef = ref.child("화장실목록");
+        fin = context.getResources().openRawResource(R.raw.toilet);
 
-        InputStream fin = context.getResources().openRawResource(R.raw.toilet);
-        if(fin!=null)
+        if(fin!=null && ref==null)
         {
             Type rowListType = new TypeToken<List<Map<String,Object>>>(){}.getType();
             Gson gson = new Gson();
@@ -117,14 +121,19 @@ public class FileHandler extends Exception
                     lon = Float.parseFloat((String)rows.get(i).get("경도"));
                 Toilet toilet = new Toilet(toilet_type, toilet_name, toilet_addrs, isToiletBoth
                 , toilets, contacts, openTime, lat, lon);
-                childRef.child(String.valueOf(i)).setValue(toilet);
+                handler.addData(i,toilet);
 
             }
-
+            return;
         }
+
 
     }
 
+    void jsonUpdater() throws IOException
+    {
+        in = new BufferedInputStream(new URL("http://data.go.kr/widg/dsi/irosGnrlDataSetManage/downloadDataStoreToJson.do?id=uddi:fcnqnzns-yl87-yndq-imli-ujjgofjotxcf&fileName=%EC%A0%84%EA%B5%AD%ED%99%94%EC%9E%A5%EC%8B%A4%ED%91%9C%EC%A4%80%EB%8D%B0%EC%9D%B4%ED%84%B0").openStream());
 
+    }
 
 }

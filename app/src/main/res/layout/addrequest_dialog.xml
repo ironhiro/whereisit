@@ -44,7 +44,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="현재위치">
+                android:text="현재위치"
+                android:fontFamily="@font/font">
 
             </Button>
         </LinearLayout>
@@ -55,17 +56,19 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/imageUpload1"
                 android:layout_width="wrap_content"
                 android:layout_height="65dp"
                 android:layout_weight="1"
+                android:onClick="onImageClick"
                 app:srcCompat="@drawable/ic_image" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/imageUpload2"
                 android:layout_width="wrap_content"
                 android:layout_height="66dp"
                 android:layout_weight="1"
+                android:onClick="onImageClick"
                 app:srcCompat="@drawable/ic_image" />
         </LinearLayout>
 

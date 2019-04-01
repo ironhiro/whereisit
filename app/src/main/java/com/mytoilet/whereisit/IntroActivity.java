@@ -11,22 +11,44 @@ import android.widget.ProgressBar;
 import com.example.mytoilet.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
 public class IntroActivity extends AppCompatActivity {
     Handler handler = new Handler();
+    Handler handler2 = new Handler();
     FileHandler converter;
-    DataSnapshot snapShot;
+    DatabaseReference snapShot;
+
+    Runnable r= new Runnable(){
+        @Override
+        public void run()
+        {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_left, R.anim.slide_right);
+            finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro); // xml과 java소스를 연결
         FirebaseApp.initializeApp(this);
+        snapShot = FirebaseDatabase.getInstance().getReference();
+        if(snapShot==null)
+        {
+            DownloadTask task = new DownloadTask();
+            task.execute();
+        }
+        else
+        {
+            handler2.postDelayed(r, 4000);
+        }
 
-        DownloadTask task = new DownloadTask();
-        task.execute();
     } // end of onCreate
 
     private class DownloadTask extends AsyncTask {
@@ -46,21 +68,22 @@ public class IntroActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
 
-            try {
-                converter = new FileHandler();
-                converter.loadJSON(IntroActivity.this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_left, R.anim.slide_right);
-                    finish();
+                try {
+                    converter = new FileHandler();
+                    converter.loadJSON(IntroActivity.this);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_left, R.anim.slide_right);
+                        finish();
+                    }
+                });
+
 
 
             return null;
@@ -76,6 +99,7 @@ public class IntroActivity extends AppCompatActivity {
 
 
     }
+
 
 
 }

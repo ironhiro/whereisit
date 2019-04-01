@@ -5,6 +5,10 @@
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
     </uses-permission>
+    <uses-permission android:name="android.permission.CAMERA">
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE">
+    </uses-permission>
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_app_icon"
@@ -13,7 +17,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name="com.mytoilet.whereisit.MainActivity">
 
         </activity>
@@ -23,6 +26,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="com.mytoilet.whereisit.ChangePictureActivity">
+
         </activity>
     </application>
 

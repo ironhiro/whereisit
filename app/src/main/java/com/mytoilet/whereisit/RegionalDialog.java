@@ -5,14 +5,15 @@ import android.content.Context;
 import android.view.Window;
 
 import com.example.mytoilet.R;
+import com.skt.Tmap.TMapMarkerItem;
 
-public class RegionalDialog {
+public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
     private Context context;
     public RegionalDialog(Context context)
     {
         this.context = context;
     }
-    public void openDialog()
+    public void openDialog(TMapMarkerItem item)
     {
         final Dialog dlg = new Dialog(context);
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -20,4 +21,8 @@ public class RegionalDialog {
         dlg.show();
     }
 
+    @Override
+    public void openDialog() {
+
+    }
 }
