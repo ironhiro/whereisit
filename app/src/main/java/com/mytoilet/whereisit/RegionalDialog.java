@@ -13,16 +13,13 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
     {
         this.context = context;
     }
-    public void openDialog(TMapMarkerItem item)
-    {
+
+
+    @Override
+    public void openDialog() {
         final Dialog dlg = new Dialog(context);
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dlg.setContentView(R.layout.regional_dialog);
         dlg.show();
-    }
-
-    @Override
-    public void openDialog() {
-
     }
 }

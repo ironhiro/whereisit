@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 style="@style/AppTitleTextAppearance"
                 android:layout_gravity="center" />
+
         </android.support.v7.widget.Toolbar>
 
         <RelativeLayout
@@ -35,8 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="8">
-
-
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/floatingActionButton"
