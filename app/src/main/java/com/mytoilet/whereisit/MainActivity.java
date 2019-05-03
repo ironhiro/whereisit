@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mTitle;
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
+    private ArrayList<Toilet> toilets;
     private TMapGpsManager myMarker = null;
     private TMapView tmapview;
     private LocationNavigator navigator=null;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
 
         tmapview = new TMapView(this);
         tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
@@ -84,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         break;
                     case R.id.action_regional:
-                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this);
+                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview);
                         region_dlg.openDialog();
-
                         break;
                     case R.id.action_add:
                         AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
@@ -243,6 +245,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(isPerGranted)
         {
             tmapview.setLocationPoint(location.getLongitude(), location.getLatitude());
+        }
+    }
+
+
+    public void onStop()
+    {
+        super.onStop();
+        if(myMarker!=null)
+        {
+            myMarker.CloseGps();
         }
     }
 }

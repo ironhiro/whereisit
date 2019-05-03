@@ -39,6 +39,7 @@ public class IntroActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference childRef;
     TMapData tMapData = new TMapData();
+    DatabaseHandler<Toilet> mList;
     final ArrayList<TMapPOIItem> toilets = new ArrayList<>();
 
     @Override
@@ -116,6 +117,7 @@ public class IntroActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
                         }
 
                         @Override
@@ -176,9 +178,8 @@ public class IntroActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("화장실 목록", toilets);
+                        intent.putExtra("화장실 목록", mList.getmList());
                         startActivity(intent);
-
                         overridePendingTransition(R.anim.slide_left, R.anim.slide_right);
                         finish();
                     }

@@ -26,6 +26,7 @@ public class DatabaseHandler<E> {
     public void addData(int id, E data)
     {
         childRef.child(String.valueOf(id)).setValue(data);
+        mList.add(data);
     }
 
     public void deleteData(int id)
@@ -39,8 +40,8 @@ public class DatabaseHandler<E> {
     }
 
 
-    public List<E> getmList()
+    public ArrayList<E> getmList()
     {
-        return mList;
+        return (ArrayList<E>)mList;
     }
 }
