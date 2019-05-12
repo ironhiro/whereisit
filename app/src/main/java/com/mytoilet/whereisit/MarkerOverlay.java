@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,12 +14,16 @@ import com.skt.Tmap.TMapMarkerItem2;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapView;
 
+
+
 public class MarkerOverlay extends TMapMarkerItem2 {
 
     private DisplayMetrics dm = null;
-
+    private TMapView mapView = null;
     private Context mContext = null;
     private BalloonOverlayView balloonView = null;
+    private int mAnimationCount = 0;
+
 
 
     @Override
@@ -65,8 +70,9 @@ public class MarkerOverlay extends TMapMarkerItem2 {
 
         balloonView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-
         balloonView.layout(0, 0, balloonView.getMeasuredWidth(), balloonView.getMeasuredHeight());
+
+
     }
 
     @Override
@@ -90,6 +96,35 @@ public class MarkerOverlay extends TMapMarkerItem2 {
 
     public boolean onSingleTapUp(PointF point, TMapView mapView) {
         mapView.showCallOutViewWithMarkerItemID(getID());
+
         return false;
     }
+
+    Handler mHandler = null;
+    @Override
+    public void startAnimation()
+    {
+        super.startAnimation();
+
+        Runnable mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (getAnimationIcons().size() > 0) {
+                    if(mAnimationCount >= getAnimationIcons().size())
+                        mAnimationCount = 0;
+
+                    setIcon(getAnimationIcons().get(mAnimationCount));
+                    
+                    mAnimationCount++;
+                    mHandler.postDelayed(this, getAniDuration());
+                }
+            }
+        };
+
+        mHandler = new Handler();
+        mHandler.post(mRunnable);
+    }
+
+
+
 }

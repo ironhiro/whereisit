@@ -36,12 +36,20 @@ import com.example.mytoilet.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.skt.Tmap.TMapCircle;
+import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
+import com.skt.Tmap.TMapMarkerItem;
+import com.skt.Tmap.TMapPOIItem;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapView;
 
 
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TMapGpsManager.onLocationChangedCallback {
@@ -52,12 +60,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Toilet> toilets;
     private TMapGpsManager myMarker = null;
     private TMapView tmapview;
+    private TMapData tmapData;
     private LocationNavigator navigator=null;
     private boolean isPerGranted = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        toilets = intent.getParcelableArrayListExtra("화장실 목록");
+        try {
+            addTMapMarkerItem();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         tmapview = new TMapView(this);
         tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
@@ -109,6 +129,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
+    }
+
+    private void addTMapMarkerItem() throws ParserConfigurationException, SAXException, IOException {
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.custom_marker);
+        int count=0;
+        for(Toilet toilet:toilets)
+        {
+            TMapMarkerItem item = new TMapMarkerItem();
+            if(toilet.lat==0 || toilet.lon ==0)
+            {
+                TMapPOIItem poiItem = tmapData.findAddressPOI(toilet.toilet_addr.get(0)).get(0);
+                item.setTMapPoint(poiItem.getPOIPoint());
+            }
+            else
+            {
+                TMapPoint point = new TMapPoint(toilet.lat, toilet.lon);
+                item.setTMapPoint(point);
+            }
+            item.setIcon(icon);
+            item.setVisible(TMapMarkerItem.VISIBLE);
+            tmapview.addMarkerItem("화장실"+count, item);
+            count++;
+        }
+        System.out.println(count);
     }
 
 

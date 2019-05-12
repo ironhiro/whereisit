@@ -15,19 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "751784707741-oib38n4o6d80bo341hppmd3qr121s6c1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mytoilet.whereisit",
-            "certificate_hash": "b79049e0405725135185453d0326da4780517c36"
-          }
-        },
-        {
           "client_id": "751784707741-2lkatuucqpfk8e3ei39mnfdmjb0ebj84.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mytoilet.whereisit",
             "certificate_hash": "7e4e215dfd904a34a8bf067465cc63deb4b30e33"
+          }
+        },
+        {
+          "client_id": "751784707741-oib38n4o6d80bo341hppmd3qr121s6c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mytoilet.whereisit",
+            "certificate_hash": "b79049e0405725135185453d0326da4780517c36"
           }
         },
         {
@@ -41,20 +41,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "751784707741-0of0qjcrr3k2c76m3ei35dv041u3i8m6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

@@ -1,9 +1,12 @@
 package com.mytoilet.whereisit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Arrays;
 import java.util.List;
 
-public class Toilet
+public class Toilet implements Parcelable
 {
     public String toilet_type;
     public String toilet_name;
@@ -32,4 +35,45 @@ public class Toilet
         this.lon = lon;
     }
 
+    protected Toilet(Parcel in) {
+        toilet_type = in.readString();
+        toilet_name = in.readString();
+        toilet_addr = in.createStringArrayList();
+        isToiletBoth = in.readByte() != 0;
+        in.readList(toilets_count, Integer.class.getClassLoader());
+        contacts = in.readString();
+        openTime = in.readString();
+        lat = in.readFloat();
+        lon = in.readFloat();
+    }
+
+    public static final Creator<Toilet> CREATOR = new Creator<Toilet>() {
+        @Override
+        public Toilet createFromParcel(Parcel in) {
+            return new Toilet(in);
+        }
+
+        @Override
+        public Toilet[] newArray(int size) {
+            return new Toilet[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(toilet_type);
+        dest.writeString(toilet_name);
+        dest.writeStringList(toilet_addr);
+        dest.writeByte((byte) (isToiletBoth ? 1 : 0));
+        dest.writeList(toilets_count);
+        dest.writeString(contacts);
+        dest.writeString(openTime);
+        dest.writeFloat(lat);
+        dest.writeFloat(lon);
+    }
 }

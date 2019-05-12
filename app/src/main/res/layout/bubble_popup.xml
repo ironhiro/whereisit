@@ -1,16 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    android:background="@drawable/border">
 
     <TextView
         android:id="@+id/bubble_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:textSize="30dp"
+        android:textStyle="bold"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/bubble_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:textSize="20dp"
         android:text="TextView" />
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+
+        android:layout_weight="5">
+        <Button
+            android:id="@+id/button_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="댓글"
+            android:textSize="20dp"
+            android:layout_weight="1">
+
+        </Button>
+        <Button
+            android:id="@+id/button_nearMarket"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="주변매장"
+            android:textSize="20dp"
+            android:layout_weight="1">
+
+        </Button>
+        <Button
+            android:id="@+id/button_pathfind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="길안내"
+            android:textSize="20dp"
+            android:layout_weight="1">
+
+        </Button>
+
+
+    </LinearLayout>
+</LinearLayout>

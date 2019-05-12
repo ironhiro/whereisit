@@ -11,22 +11,17 @@ import android.view.Window;
 
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.example.mytoilet.R;
 import com.skt.Tmap.TMapData;
 
 
+import com.skt.Tmap.TMapMarkerItem;
+import com.skt.Tmap.TMapMarkerItem2;
 import com.skt.Tmap.TMapPOIItem;
-import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
     private Context context;
@@ -59,9 +54,23 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
                         tmapData.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
                             @Override
                             public void onFindAllPOI(ArrayList<TMapPOIItem> arrayList) {
+                                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.custom_marker);
 
-                                tmapView.addTMapPOIItem(arrayList);
+                                for(int i=0;i<arrayList.size();i++)
+                                {
+                                    TMapPOIItem item = arrayList.get(i);
+                                    MarkerOverlay marker = new MarkerOverlay(context, item.getPOIID(), item.getPOIName());
+                                    String strID = "TMapMarkerItem"+i;
+                                    marker.setPosition(0.2f,0.2f);
+                                    marker.setTMapPoint(item.getPOIPoint());
+                                    marker.setIcon(bitmap);
 
+                                    tmapView.addMarkerItem2(strID,marker);
+                                    break;
+                                }
+                                tmapView.setCenterPoint(arrayList.get(0).getPOIPoint().getLongitude(),arrayList.get(0).getPOIPoint().getLatitude(),true);
+
+                                /*
                                 TMapPolyLine polyline = null; //보행자 경로를 얻어옴
                                 try {
                                     polyline = tmapData.findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, tmapView.getLocationPoint(), arrayList.get(0).getPOIPoint());
@@ -73,7 +82,7 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
                                 } catch (SAXException e) {
                                     e.printStackTrace();
                                 }
-
+                                */
 
                             }
                         });

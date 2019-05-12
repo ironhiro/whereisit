@@ -114,8 +114,7 @@ public class FileHandler extends Exception
                 Toilet toilet = new Toilet(toilet_type, toilet_name, toilet_addrs, isToiletBoth
                 , toilets, contacts, openTime, lat, lon);
                 toilethandler.addData(i,toilet);
-                Comment comment = new Comment(i,null,null);
-                commenthandler.addData(i,comment);
+
             }
             return;
         }
