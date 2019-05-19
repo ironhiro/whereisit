@@ -4,13 +4,13 @@ package com.mytoilet.whereisit;
 import android.content.Context;
 
 import com.example.mytoilet.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,42 +19,45 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import io.realm.Realm;
+import io.realm.RealmList;
 
 
 public class FileHandler extends Exception
 {
     private BufferedInputStream in;
-    private DatabaseReference ref;
-    private DatabaseReference childRef1,childRef2;
-    private DatabaseHandler<Toilet> toilethandler;
-    private DatabaseHandler<Comment> commenthandler;
+
+    private Realm mRealm;
+
     private InputStream fin;
-    public FileHandler() throws IOException
+    public FileHandler(Realm realm) throws IOException
     {
+
+        this.mRealm = realm;
+        /*
         SimpleDateFormat format = new SimpleDateFormat("dd", Locale.KOREA);
         Date date = new Date();
         String currentDay = format.format(date);
-        ref = FirebaseDatabase.getInstance().getReference();
-        childRef1 = ref.child("화장실목록");
-        childRef2 = ref.child("댓글");
-        toilethandler = new DatabaseHandler<>(childRef1);
-        commenthandler = new DatabaseHandler<>(childRef2);
+
+
 
         if(Integer.parseInt(currentDay) >= 25 && Integer.parseInt(currentDay) <= 31)
         {
+
             jsonUpdater();
         }
+        */
     }
 
-    void loadJSON(Context context) throws IOException {
+    void loadJSON(Context context) throws IOException, ParserConfigurationException, SAXException {
 
         fin = context.getResources().openRawResource(R.raw.toilet);
-        if(fin==null)
+        if(fin!=null)
         {
             Type rowListType = new TypeToken<List<Map<String,Object>>>(){}.getType();
             Gson gson = new Gson();
@@ -72,56 +75,66 @@ public class FileHandler extends Exception
             JsonElement secondObject = parser.parse(jsonReader).getAsJsonObject().get("records");
 
             List<Map<String,Object>> rows = gson.fromJson(secondObject,rowListType); // MapList로 json데이터 넣어줌
-
+            mRealm.beginTransaction();
             for(int i=0;i<rows.size();i++)
             {
                 String toilet_type=(String)rows.get(i).get("구분");
                 String toilet_name=(String)rows.get(i).get("화장실명");
                 toilet_name=toilet_name.replace(".","");
-                String[] toilet_addrs=new String[2];
-                toilet_addrs[0] = (String)rows.get(i).get("소재지도로명주소");
-                toilet_addrs[1] = (String)rows.get(i).get("소재지지번주소");
+                RealmList<String> toilet_addrs=new RealmList<String>();
+                toilet_addrs.add((String)rows.get(i).get("소재지도로명주소"));
+                toilet_addrs.add((String)rows.get(i).get("소재지지번주소"));
                 boolean isToiletBoth;
                 String toiletBoth = (String)rows.get(i).get("남녀공용화장실여부");
                 if(toiletBoth.toUpperCase().equals("Y"))
                     isToiletBoth=true;
                 else
                     isToiletBoth=false;
-                Integer[] toilets = new Integer[9];
-                toilets[0] = (int)Float.parseFloat((String)rows.get(i).get("남성용-대변기수"));
-                toilets[1] = (int)Float.parseFloat((String)rows.get(i).get("남성용-소변기수"));
-                toilets[2] = (int)Float.parseFloat((String)rows.get(i).get("남성용-장애인용대변기수"));
-                toilets[3] = (int)Float.parseFloat((String)rows.get(i).get("남성용-장애인용소변기수"));
-                toilets[4] = (int)Float.parseFloat((String)rows.get(i).get("남성용-어린이용대변기수"));
-                toilets[5] = (int)Float.parseFloat((String)rows.get(i).get("남성용-어린이용소변기수"));
-                toilets[6] = (int)Float.parseFloat((String)rows.get(i).get("여성용-대변기수"));
-                toilets[7] = (int)Float.parseFloat((String)rows.get(i).get("여성용-장애인용대변기수"));
-                toilets[8] = (int)Float.parseFloat((String)rows.get(i).get("여성용-어린이용대변기수"));
+                RealmList<Integer> toilets = new RealmList<>();
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-대변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-소변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-장애인용대변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-장애인용소변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-어린이용대변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("남성용-어린이용소변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("여성용-대변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("여성용-장애인용대변기수")));
+                toilets.add((int)Float.parseFloat((String)rows.get(i).get("여성용-어린이용대변기수")));
                 String contacts = (String)rows.get(i).get("전화번호");
                 String openTime = (String)rows.get(i).get("개방시간");
-                float lat;
+                double lat;
                 String latitude = (String)rows.get(i).get("위도");
                 if(latitude == null || latitude.equals(""))
                     lat = 0;
                 else
                     lat = Float.parseFloat((String)rows.get(i).get("위도"));
                 String longitude = (String)rows.get(i).get("경도");
-                float lon;
+                double lon;
                 if(longitude == null || longitude.equals(""))
                     lon = 0;
                 else
                     lon = Float.parseFloat((String)rows.get(i).get("경도"));
-                Toilet toilet = new Toilet(toilet_type, toilet_name, toilet_addrs, isToiletBoth
-                , toilets, contacts, openTime, lat, lon);
-                toilethandler.addData(i,toilet);
+
+
+                Toilet toilet = mRealm.createObject(Toilet.class,i);
+                toilet.toilet_name = (toilet_name);
+                toilet.toilet_type = (toilet_type);
+                toilet.isToiletBoth = (isToiletBoth);
+                toilet.toilet_addr1 = toilet_addrs.get(0);
+                toilet.toilet_addr2 = toilet_addrs.get(1);
+                toilet.toilets_count=(toilets);
+                toilet.contacts =(contacts);
+                toilet.openTime = (openTime);
+                toilet.lat = (lat);
+                toilet.lon = (lon);
 
             }
+            mRealm.commitTransaction();
             return;
         }
 
 
     }
-
 
 
     void jsonUpdater() throws IOException

@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -12,54 +13,24 @@ import android.widget.TextView;
 
 import com.example.mytoilet.R;
 
-public class BalloonOverlayView extends FrameLayout {
+public class BalloonOverlayView implements Dialog {
 
-    private LinearLayout layout;
-    private TextView title;
-    private TextView subTitle;
-    private Button button1, button2, button3;
+    private Context mContext;
 
-    public BalloonOverlayView(Context context, String labelName, String id) {
+    public BalloonOverlayView(Context context) {
+        this.mContext = context;
 
-        super(context);
-
-        setPadding(10, 0, 10, 0);
-        layout = new LinearLayout(context);
-        layout.setVisibility(VISIBLE);
-
-
-        setupView(context, layout, labelName, id);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.NO_GRAVITY;
-        addView(layout, params);
     }
 
 
-    protected void setupView(Context context, final ViewGroup parent, String labelName, String id) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
-        View view = inflater.inflate(R.layout.bubble_popup, parent);
 
-        title = (TextView) view.findViewById(R.id.bubble_title);
-        subTitle = (TextView) view.findViewById(R.id.bubble_subtitle);
-        button1 = (Button)view.findViewById(R.id.button_comment);
-        button2 = (Button)view.findViewById(R.id.button_nearMarket);
-        button3 = (Button)view.findViewById(R.id.button_pathfind);
-
-        setTitle(labelName);
-        setSubTitle(id);
+    @Override
+    public void openDialog() {
+        final android.app.Dialog dlg = new android.app.Dialog(mContext);
+        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dlg.setContentView(R.layout.regional_dialog);
+        dlg.show();
     }
-
-    public void setTitle(String str) {
-        title.setText(str);
-    }
-
-    public void setSubTitle(String str) {
-        subTitle.setText(str);
-    }
-
-
 }

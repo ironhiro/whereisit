@@ -59,14 +59,14 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
                                 for(int i=0;i<arrayList.size();i++)
                                 {
                                     TMapPOIItem item = arrayList.get(i);
-                                    MarkerOverlay marker = new MarkerOverlay(context, item.getPOIID(), item.getPOIName());
+                                    TMapMarkerItem marker = new TMapMarkerItem();
                                     String strID = "TMapMarkerItem"+i;
                                     marker.setPosition(0.2f,0.2f);
                                     marker.setTMapPoint(item.getPOIPoint());
                                     marker.setIcon(bitmap);
 
-                                    tmapView.addMarkerItem2(strID,marker);
-                                    break;
+                                    tmapView.addMarkerItem(strID,marker);
+
                                 }
                                 tmapView.setCenterPoint(arrayList.get(0).getPOIPoint().getLongitude(),arrayList.get(0).getPOIPoint().getLatitude(),true);
 
