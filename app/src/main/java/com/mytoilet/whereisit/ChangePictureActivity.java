@@ -11,6 +11,5 @@ public class ChangePictureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.changepicture_activity); // xml과 java소스를 연결
-
     } // end of onCreate
 }

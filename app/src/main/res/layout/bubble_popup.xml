@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="320dp"
     android:layout_height="250dp"
     android:orientation="vertical"
     android:background="@drawable/border">
@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:layout_weight="1"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         android:text="TextView" />
 
@@ -21,7 +21,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:layout_weight="1"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:text="TextView" />
 
     <LinearLayout
@@ -29,7 +29,25 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
 
-        android:layout_weight="5">
+        android:layout_weight="0.5">
+        <Button
+            android:id="@+id/button_toiletinfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="정보"
+            android:textSize="20dp"
+            android:layout_weight="1">
+        </Button>
+        <Button
+            android:id="@+id/button_pathfind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="길안내"
+            android:textSize="20dp"
+            android:layout_weight="1">
+        </Button>
         <Button
             android:id="@+id/button_comment"
             android:layout_width="0dp"
@@ -45,22 +63,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="주변매장"
+            android:text="편의점"
             android:textSize="20dp"
             android:layout_weight="1">
 
         </Button>
-        <Button
-            android:id="@+id/button_pathfind"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="길안내"
-            android:textSize="20dp"
-            android:layout_weight="1">
-
-        </Button>
-
 
     </LinearLayout>
 </LinearLayout>

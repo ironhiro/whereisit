@@ -14,6 +14,8 @@ public class Comment extends RealmObject {
     @PrimaryKey
     private int comment_id;
 
+
+
     private double rating;
 
     private RealmList<String> contents;

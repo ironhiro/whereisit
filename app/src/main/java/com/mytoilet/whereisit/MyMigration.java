@@ -18,7 +18,5 @@ public class MyMigration implements RealmMigration {
             oldVersion++;
         }
 
-
-
     }
 }

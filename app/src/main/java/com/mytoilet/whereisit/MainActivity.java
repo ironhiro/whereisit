@@ -109,8 +109,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (distance < 2) {
                         item.setIcon(icon);
                         item.setVisible(TMapMarkerItem.VISIBLE);
+                        item.setName(toiletList.get(i).toilet_name);
 
-                        tmapview.addMarkerItem("마커" + i, item);
+                        tmapview.addMarkerItem(String.valueOf(toiletList.get(i).toilet_id), item);
                         tmapview.setMapPosition(TMapView.POSITION_DEFAULT);
 
                         count++;
@@ -143,7 +144,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tmapview.setOnClickListenerCallBack(new TMapView.OnClickListenerCallback() {
             @Override
             public boolean onPressEvent(ArrayList<TMapMarkerItem> arrayList, ArrayList<TMapPOIItem> arrayList1, TMapPoint tMapPoint, PointF pointF) {
-                
+                mRealm = Realm.getDefaultInstance();
+
+                for(TMapMarkerItem markerItem: arrayList)
+                {
+                    RealmQuery<Toilet> query = mRealm.where(Toilet.class).equalTo("toilet_id",Integer.parseInt(markerItem.getID()));
+                    Toilet toilet = query.findFirst();
+                    BalloonDialog dialog = new BalloonDialog(MainActivity.this,toilet);
+                    dialog.openDialog();
+                }
+
+                mRealm.close();
                 return false;
             }
 
@@ -202,20 +213,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivityForResult(intent, ResultCode.PICK_FROM_CAMERA.ordinal());
                 }
             };
-            DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                    startActivityForResult(intent, ResultCode.PICK_FROM_ALBUM.ordinal());
-                }
+            DialogInterface.OnClickListener albumListener = (dialog, which) -> {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, ResultCode.PICK_FROM_ALBUM.ordinal());
             };
-            DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface mDialog, int which) {
-                    mDialog.dismiss();
-                }
-            };
+            DialogInterface.OnClickListener cancelListener = (mDialog, which) -> mDialog.dismiss();
             new AlertDialog.Builder(this)
                     .setTitle("업로드할 이미지 선택")
                     .setNeutralButton("앨범에서 가져오기", albumListener)
