@@ -20,16 +20,16 @@ public class LocationNavigator extends Thread {
     public void run()
     {
         try{
-            TMapPolyLine tMapPolyLine = new TMapData().findPathData(item1.getTMapPoint(), item2.getTMapPoint());
+            tMapView.removeAllTMapPolyLine();
+            TMapPolyLine tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, item1.getTMapPoint(), item2.getTMapPoint());
             tMapPolyLine.setLineColor(Color.BLUE);
-            tMapPolyLine.setLineWidth(10);
+            tMapPolyLine.setLineAlpha(100);
+            tMapPolyLine.setLineWidth(20);
             tMapView.addTMapPolyLine("Line1", tMapPolyLine);
-
         }catch(Exception e)
         {
             e.printStackTrace();
         }
-
     }
 
 }

@@ -2,15 +2,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="400dp"
-    android:layout_height="500dp"
+    android:layout_width="320dp"
+    android:layout_height="400dp"
     android:background="#EBECF0"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:text="화장실 평가"
         android:gravity="center"
         android:fontFamily="@font/font"
@@ -22,7 +22,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <ScrollView
@@ -35,7 +35,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
                     <RatingBar
                         android:id="@+id/rating"
@@ -52,16 +52,17 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-
                         android:layout_weight="1"
-
-                        android:text="4"
-                        android:textSize="21dp" />
+                        android:text="4.5"
+                        android:textSize="21dp"
+                        android:textStyle="bold
+"
+                        android:gravity="center"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.5">
+                    android:layout_weight="1">
                     <EditText
                         android:id="@+id/commentText"
                         android:inputType="textMultiLine"
@@ -94,7 +95,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:background="#6048D2">
 

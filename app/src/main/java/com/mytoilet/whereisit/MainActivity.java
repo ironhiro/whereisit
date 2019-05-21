@@ -52,7 +52,6 @@ import java.util.ArrayList;
 
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
         tmapData = new TMapData();
+
     }
 
 
@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mRealm = Realm.getDefaultInstance();
                 RealmQuery<Toilet> query = mRealm.where(Toilet.class);
                 RealmResults<Toilet> toiletList = query.findAll();
+                tmapview.removeAllMarkerItem();
+                tmapview.removeAllTMapCircle();
                 int size = toiletList.size();
                 for (int i = 0; i < size; i++) {
                     TMapMarkerItem item = new TMapMarkerItem();
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             });
             th.start();
+
         }
 
     }
@@ -145,16 +148,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onPressEvent(ArrayList<TMapMarkerItem> arrayList, ArrayList<TMapPOIItem> arrayList1, TMapPoint tMapPoint, PointF pointF) {
                 mRealm = Realm.getDefaultInstance();
-
                 for(TMapMarkerItem markerItem: arrayList)
                 {
                     RealmQuery<Toilet> query = mRealm.where(Toilet.class).equalTo("toilet_id",Integer.parseInt(markerItem.getID()));
                     Toilet toilet = query.findFirst();
-                    BalloonDialog dialog = new BalloonDialog(MainActivity.this,toilet);
+                    BalloonDialog dialog = new BalloonDialog(MainActivity.this,toilet,tmapview, mRealm);
                     dialog.openDialog();
                 }
 
-                mRealm.close();
                 return false;
             }
 
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double dist = earthRadius * c;
 
-        return dist; //m로 환산
+        return dist; //km로 환산
     }
 
     public void onImageClick(View v) {

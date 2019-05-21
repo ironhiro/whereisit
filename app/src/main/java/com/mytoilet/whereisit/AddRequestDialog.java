@@ -17,7 +17,6 @@ public class AddRequestDialog implements com.mytoilet.whereisit.Dialog{
 
     public AddRequestDialog(Context context) {
         this.context = context;
-
     }
 
     public void openDialog() {
