@@ -32,9 +32,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.example.mytoilet.R;
 import com.facebook.stetho.Stetho;
@@ -49,6 +54,7 @@ import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 import io.realm.Realm;
@@ -64,8 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TMapGpsManager myMarker = null;
     private TMapView tmapview;
     private TMapData tmapData;
-    //private Geocoder geoCoder;
-    private LocationNavigator navigator = null;
+    private ListView listView;
+    private ListViewAdapter adapter;
+
     private boolean isPerGranted = false;
     private Realm mRealm;
 
@@ -74,7 +81,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
+
+
+        adapter = new ListViewAdapter();
+        listView = (ListView)findViewById(R.id.toilet_list);
+        listView.setAdapter(adapter);
+
         tmapData = new TMapData();
+        tmapview = new TMapView(this);
+        tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
+        addClickListener();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        // 1. Toolbar 생성
+        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.setTitleTextAppearance(this, R.style.AppTitleTextAppearance);
+        mTitle = (TextView) findViewById(R.id.toolbar_title);
+        mTitle.setText(myToolbar.getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_appbar_menu);
+
+        // 2. BottomAppBar 생성
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_around:
+                        addTMapMarkerItem();
+                        break;
+                    case R.id.action_regional:
+                        if(myMarker!=null)
+                            myMarker.CloseGps();
+                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview,mRealm,adapter);
+                        region_dlg.openDialog();
+                        break;
+                    case R.id.action_add:
+                        AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
+                        request_dlg.openDialog();
+                        break;
+
+                }
+                return true;
+            }
+        });
+
+
+        // 3. Tmap 생성
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.tmap_layout);
+        layout.addView(tmapview);
+
+        // 4. Navigation Drawer 생성
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
     }
 
@@ -84,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (myMarker == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
             builder.setMessage("현재 위치를 조회 해 주시기 바랍니다.");
             builder.setPositiveButton("예",
                     (dialog, which) -> Toast.makeText(getApplicationContext(), "먼저 현재 위치를 조회해주세요.", Toast.LENGTH_LONG).show());
@@ -96,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mRealm = Realm.getDefaultInstance();
                 RealmQuery<Toilet> query = mRealm.where(Toilet.class);
                 RealmResults<Toilet> toiletList = query.findAll();
+                adapter.clear();
+                adapter.notifyDataSetChanged();
                 tmapview.removeAllMarkerItem();
                 tmapview.removeAllTMapCircle();
                 int size = toiletList.size();
@@ -105,16 +166,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         continue;
                     else {
                         item.setTMapPoint(new TMapPoint(toiletList.get(i).lat, toiletList.get(i).lon));
-
                     }
                     double distance = getDistance(myMarker.getLocation().getLatitude(), myMarker.getLocation().getLongitude(), item.latitude, item.longitude);
                     if (distance < 2) {
                         item.setIcon(icon);
                         item.setVisible(TMapMarkerItem.VISIBLE);
                         item.setName(toiletList.get(i).toilet_name);
-
+                        adapter.addItem(item.getName(),toiletList.get(i).toilet_addr1.equals("")? toiletList.get(i).toilet_addr2:toiletList.get(i).toilet_addr1, distance);
                         tmapview.addMarkerItem(String.valueOf(toiletList.get(i).toilet_id), item);
-                        tmapview.setMapPosition(TMapView.POSITION_DEFAULT);
+
 
                         count++;
                     }
@@ -127,7 +187,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 circle.setRadiusVisible(true);
                 tmapview.addTMapCircle("범위",circle);
 
-                addClickListener();
+                adapter.sort();
+                adapter.notifyDataSetChanged();
+
                 int finalCount = count;
                 runOnUiThread(() -> {
                     Toast toast = Toast.makeText(MainActivity.this, "검색 결과 " + finalCount + "개 찾았습니다.", Toast.LENGTH_LONG);
@@ -280,51 +342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        tmapview = new TMapView(this);
-        tmapview.setSKTMapApiKey(getString(R.string.tmap_app_key));
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        // 1. Toolbar 생성
-        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        myToolbar.setTitleTextAppearance(this, R.style.AppTitleTextAppearance);
-        mTitle = (TextView) findViewById(R.id.toolbar_title);
-        mTitle.setText(myToolbar.getTitle());
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_appbar_menu);
-
-        // 2. BottomAppBar 생성
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_around:
-                        addTMapMarkerItem();
-                        break;
-                    case R.id.action_regional:
-                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview);
-                        region_dlg.openDialog();
-                        break;
-                    case R.id.action_add:
-                        AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
-                        request_dlg.openDialog();
-                        break;
-
-                }
-                return true;
-            }
-        });
-
-
-        // 3. Tmap 생성
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.tmap_layout);
-        layout.addView(tmapview);
-
-        // 4. Navigation Drawer 생성
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
     }
@@ -342,6 +360,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (myMarker != null) {
             myMarker.CloseGps();
         }
+    }
+
+    public void onSwitchButtonClick(View v)
+    {
+        Button b1 = (Button)v;
+        ViewSwitcher switcher = (ViewSwitcher)findViewById(R.id.switch_layout);
+        if(b1.getText().equals("리스트로 전환"))
+        {
+            b1.setOnClickListener(v1 -> {
+                switcher.showNext();
+            });
+        }
+        else
+        {
+            b1.setOnClickListener(v12 -> {
+                switcher.showPrevious();
+            });
+        }
+
     }
 
     @Override

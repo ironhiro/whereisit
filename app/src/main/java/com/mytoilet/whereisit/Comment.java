@@ -13,7 +13,8 @@ import io.realm.annotations.Required;
 public class Comment extends RealmObject {
     @PrimaryKey
     private int comment_id;
-    private double rating;
+    private float rating;
+    private float sum;
     private RealmList<String> contents;
 
 
@@ -22,7 +23,7 @@ public class Comment extends RealmObject {
     {
         return comment_id;
     }
-    public double getRating()
+    public float getRating()
     {
         return rating;
     }
@@ -30,7 +31,22 @@ public class Comment extends RealmObject {
     {
         return contents;
     }
+    public float getSum(){return sum;}
 
-
-
+    public void setCommentId(int comment_id)
+    {
+        this.comment_id=comment_id;
+    }
+    public void setRating(float rating)
+    {
+        this.rating = rating;
+    }
+    public void setSum(float sum)
+    {
+        this.sum = sum;
+    }
+    public void addComment(String comment)
+    {
+        contents.add(comment);
+    }
 }

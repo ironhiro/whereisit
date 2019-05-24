@@ -130,9 +130,9 @@ public class BalloonDialog implements Dialog {
 
         Button comment = (Button) dlg.findViewById(R.id.button_comment);
         comment.setOnClickListener(v -> {
-            CommentDialog dialog = new CommentDialog(mContext);
+            CommentDialog dialog = new CommentDialog(mContext,realm,toilet);
             dialog.openDialog();
-            realm.close();
+
             dlg.dismiss();
         });
     }

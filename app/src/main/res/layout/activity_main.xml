@@ -31,41 +31,73 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <RelativeLayout
-            android:id="@+id/tmap_layout"
+        <ViewSwitcher
+            android:id="@+id/switch_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="8">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButton"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="22dp"
-                android:background="@color/colorAccent"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="onFabClick"
-                app:srcCompat="@drawable/ic_round_my_location_24px"
-                tools:layout_editor_absoluteX="318dp"
-                tools:layout_editor_absoluteY="530dp" />
-
-            <TextView
-                android:id="@+id/searchResult"
+            <RelativeLayout
+                android:id="@+id/tmap_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="14dp"
-                android:text=""
-                android:textStyle="bold"
-                android:textSize="18sp" />
+                android:layout_height="match_parent">
 
-        </RelativeLayout>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="22dp"
+                    android:background="@color/colorAccent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onFabClick"
+                    app:srcCompat="@drawable/ic_round_my_location_24px"
+                    tools:layout_editor_absoluteX="318dp"
+                    tools:layout_editor_absoluteY="530dp" />
+
+                <Button
+                    android:id="@+id/switchListButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:onClick="onSwitchButtonClick"
+                    android:text="리스트로 전환" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/list_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/switchMapButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:onClick="onSwitchButtonClick"
+                    android:text="맵으로 전환" />
+                <ListView
+                    android:id="@+id/toilet_list"
+                    android:layout_below="@+id/switchMapButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF">
+                </ListView>
+
+
+            </RelativeLayout>
+
+        </ViewSwitcher>
+
+
 
 
         <android.support.design.widget.BottomNavigationView
