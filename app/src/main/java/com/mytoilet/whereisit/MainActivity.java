@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 adapter.notifyDataSetChanged();
                 tmapview.removeAllMarkerItem();
                 tmapview.removeAllTMapCircle();
+                tmapview.removeAllTMapPolygon();
+                tmapview.removeAllTMapPOIItem();
                 int size = toiletList.size();
                 for (int i = 0; i < size; i++) {
                     TMapMarkerItem item = new TMapMarkerItem();
@@ -174,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         item.setName(toiletList.get(i).toilet_name);
                         adapter.addItem(item.getName(),toiletList.get(i).toilet_addr1.equals("")? toiletList.get(i).toilet_addr2:toiletList.get(i).toilet_addr1, distance);
                         tmapview.addMarkerItem(String.valueOf(toiletList.get(i).toilet_id), item);
-
 
                         count++;
                     }
@@ -243,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
+
         }
         return super.onOptionsItemSelected(item);
     }

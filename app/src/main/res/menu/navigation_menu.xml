@@ -2,54 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="성별">
-        <menu
-            android:id="@+id/group_gender"
-            android:checkableBehavior="single">
-
+    <item android:title="공용">
+        <menu>
             <item
-                app:actionLayout="@layout/action_radiobox"
-                android:id="@+id/male"
-                android:title="남자"
-
-                />
-            <item
-                android:id="@+id/female"
-                android:title="여자"
-                app:actionLayout="@layout/action_radiobox"
-                />
-
+                app:actionLayout="@layout/both_radiobox"
+                android:id="@+id/radio_both"
+                android:title="">
+            </item>
         </menu>
 
     </item>
     <item android:title="세부설정">
-        <menu
-            android:id="@+id/group_details"
-            >
-            <group
-                android:checkableBehavior="single">
-                <item
-                    android:id="@+id/child"
-                    android:title="어린이용"
-                    app:actionLayout="@layout/action_switch"
-                    />
-                <item
-                    android:id="@+id/handi"
-                    android:title="장애인용"
-                    app:actionLayout="@layout/action_switch"
-                    />
-                <item
-                    android:id="@+id/bowl"
-                    android:title="양변기"
-                    app:actionLayout="@layout/action_switch"
-                    />
-                <item
-                    android:id="@+id/squat"
-                    android:title="좌변기"
-                    app:actionLayout="@layout/action_switch"
-                    />
+        <menu>
+            <item
+                app:actionLayout="@layout/details_radiobox"
+                android:id="@+id/radio_details"
+                android:title="">
 
-            </group>
+            </item>
 
         </menu>
     </item>

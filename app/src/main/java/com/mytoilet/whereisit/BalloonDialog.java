@@ -112,6 +112,10 @@ public class BalloonDialog implements Dialog {
                 }
                 else
                 {
+                    tmapView.removeAllTMapCircle();
+                    tmapView.removeAllMarkerItem();
+                    tmapView.addMarkerItem(item.getID(), item);
+                    tmapView.setCenterPoint(item.longitude, item.latitude,true);
                     tmapView.addTMapPOIItem(POIItem);
                     Activity activity = (Activity)mContext;
                     ArrayList finalPOIItem = POIItem;
@@ -132,7 +136,6 @@ public class BalloonDialog implements Dialog {
         comment.setOnClickListener(v -> {
             CommentDialog dialog = new CommentDialog(mContext,realm,toilet);
             dialog.openDialog();
-
             dlg.dismiss();
         });
     }

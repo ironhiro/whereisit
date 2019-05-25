@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="320dp"
-    android:layout_height="400dp"
+    android:layout_height="500dp"
     android:background="#EBECF0"
     android:orientation="vertical">
 
@@ -25,9 +25,7 @@
         android:layout_weight="4"
         android:orientation="vertical">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +33,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0.7"
                     android:orientation="horizontal">
                     <RatingBar
                         android:id="@+id/rating"
@@ -100,11 +98,9 @@
                 <ListView
                     android:id="@+id/commentList"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                     />
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
             </LinearLayout>
-        </ScrollView>
-
 
     </LinearLayout>
 

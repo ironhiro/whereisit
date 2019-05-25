@@ -37,6 +37,7 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
     private TMapView tmapView;
     private Realm mRealm;
     private ListViewAdapter adapter;
+
     public RegionalDialog(Context context, TMapView tmapView, Realm mRealm,ListViewAdapter adapter) {
         this.context = context;
         this.tmapView = tmapView;
@@ -73,6 +74,7 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
                         tmapView.removeAllMarkerItem();
                         tmapView.removeAllTMapCircle();
                         tmapView.removeAllTMapPolygon();
+                        tmapView.removeAllTMapPOIItem();
                         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.custom_marker);
                         tmapView.setCenterPoint(arrayList.get(0).getPOIPoint().getLongitude(),arrayList.get(0).getPOIPoint().getLatitude(),true);
                         RealmQuery<Toilet> query = mRealm.where(Toilet.class);

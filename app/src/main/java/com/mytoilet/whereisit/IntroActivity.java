@@ -84,7 +84,6 @@ public class IntroActivity extends AppCompatActivity {
                 }
 
                 mRealm.close();
-
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
