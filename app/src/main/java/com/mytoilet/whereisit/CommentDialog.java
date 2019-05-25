@@ -83,6 +83,7 @@ public class CommentDialog implements Dialog{
             rating.setRating(0);
             rating_text.setText(String.valueOf(rating.getRating()));
             adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,lists);
+            commentList.setAdapter(adapter)
         }
         else
         {
