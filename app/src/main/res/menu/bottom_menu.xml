@@ -4,6 +4,7 @@
         android:id="@+id/action_around"
         android:enabled="true"
         android:icon="@drawable/ic_round_my_location_24px"
+
         android:title="주변화장실"/>
 
     <item

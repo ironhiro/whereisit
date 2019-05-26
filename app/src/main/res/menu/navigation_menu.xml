@@ -5,8 +5,8 @@
     <item android:title="공용">
         <menu>
             <item
-                app:actionLayout="@layout/both_radiobox"
-                android:id="@+id/radio_both"
+                app:actionLayout="@layout/toilet_checkbox"
+                android:id="@+id/toilet_checkbox"
                 android:title="">
             </item>
         </menu>
@@ -18,14 +18,8 @@
                 app:actionLayout="@layout/details_radiobox"
                 android:id="@+id/radio_details"
                 android:title="">
-
             </item>
-
         </menu>
     </item>
-
-
-
-
 
 </menu>

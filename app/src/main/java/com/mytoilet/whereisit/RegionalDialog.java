@@ -76,48 +76,60 @@ public class RegionalDialog implements com.mytoilet.whereisit.Dialog {
                         tmapView.removeAllTMapPolygon();
                         tmapView.removeAllTMapPOIItem();
                         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.custom_marker);
-                        tmapView.setCenterPoint(arrayList.get(0).getPOIPoint().getLongitude(),arrayList.get(0).getPOIPoint().getLatitude(),true);
-                        RealmQuery<Toilet> query = mRealm.where(Toilet.class);
-                        RealmResults<Toilet> toiletList = query.findAll();
-
-                        int size = toiletList.size();
-                        for (int i = 0; i < size; i++) {
-                            TMapMarkerItem item = new TMapMarkerItem();
-                            if (toiletList.get(i).lat == 0 || toiletList.get(i).lon == 0)
-                                continue;
-                            else {
-                                item.setTMapPoint(new TMapPoint(toiletList.get(i).lat, toiletList.get(i).lon));
-
-                            }
-
-                            double distance = activity.getDistance(arrayList.get(0).getPOIPoint().getLatitude(),arrayList.get(0).getPOIPoint().getLongitude(), item.latitude, item.longitude);
-                            if (distance < 2) {
-                                item.setIcon(bitmap);
-                                item.setVisible(TMapMarkerItem.VISIBLE);
-                                item.setName(toiletList.get(i).toilet_name);
-                                adapter.addItem(item.getName(), toiletList.get(i).toilet_addr1.equals("")?toiletList.get(i).toilet_addr2:toiletList.get(i).toilet_addr1,distance);
-                                tmapView.addMarkerItem(String.valueOf(toiletList.get(i).toilet_id), item);
-                                tmapView.setMapPosition(TMapView.POSITION_DEFAULT);
-
-                                count++;
-                            }
+                        if(arrayList.size()==0)
+                        {
+                            activity.runOnUiThread(() -> {
+                                Toast toast = Toast.makeText(activity, "키워드가 모호합니다. 찾으실 수 없습니다.", Toast.LENGTH_LONG);
+                                toast.show();
+                            });
+                            mRealm.close();
                         }
-                        TMapCircle circle = new TMapCircle();
-                        circle.setCenterPoint(tmapView.getCenterPoint());
-                        circle.setAreaColor(Color.GRAY);
-                        circle.setAreaAlpha(100);
-                        circle.setRadius(2000);
-                        circle.setRadiusVisible(true);
-                        tmapView.addTMapCircle("범위",circle);
-                        adapter.sort();
-                        adapter.notifyDataSetChanged();
-                        int finalCount = count;
-                        activity.runOnUiThread(() -> {
-                            Toast toast = Toast.makeText(activity, "검색 결과 " + finalCount + "개 찾았습니다.", Toast.LENGTH_LONG);
-                            toast.show();
-                        });
+                        else
+                        {
+                            tmapView.setCenterPoint(arrayList.get(0).getPOIPoint().getLongitude(),arrayList.get(0).getPOIPoint().getLatitude(),true);
+                            RealmQuery<Toilet> query = mRealm.where(Toilet.class);
+                            RealmResults<Toilet> toiletList = query.findAll();
+                            toiletList = activity.filterMarker(toiletList);
+                            int size = toiletList.size();
+                            for (int i = 0; i < size; i++) {
+                                TMapMarkerItem item = new TMapMarkerItem();
+                                if (toiletList.get(i).lat == 0 || toiletList.get(i).lon == 0)
+                                    continue;
+                                else {
+                                    item.setTMapPoint(new TMapPoint(toiletList.get(i).lat, toiletList.get(i).lon));
 
-                        mRealm.close();
+                                }
+
+                                double distance = activity.getDistance(arrayList.get(0).getPOIPoint().getLatitude(),arrayList.get(0).getPOIPoint().getLongitude(), item.latitude, item.longitude);
+                                if (distance < 2) {
+                                    item.setIcon(bitmap);
+                                    item.setVisible(TMapMarkerItem.VISIBLE);
+                                    item.setName(toiletList.get(i).toilet_name);
+                                    adapter.addItem(item.getName(), toiletList.get(i).toilet_addr1.equals("")?toiletList.get(i).toilet_addr2:toiletList.get(i).toilet_addr1,distance);
+                                    tmapView.addMarkerItem(String.valueOf(toiletList.get(i).toilet_id), item);
+                                    tmapView.setMapPosition(TMapView.POSITION_DEFAULT);
+
+                                    count++;
+                                }
+                            }
+                            TMapCircle circle = new TMapCircle();
+                            circle.setCenterPoint(tmapView.getCenterPoint());
+                            circle.setAreaColor(Color.GRAY);
+                            circle.setAreaAlpha(100);
+                            circle.setRadius(2000);
+                            circle.setRadiusVisible(true);
+                            tmapView.addTMapCircle("범위",circle);
+                            adapter.sort();
+                            adapter.notifyDataSetChanged();
+                            int finalCount = count;
+                            activity.runOnUiThread(() -> {
+                                Toast toast = Toast.makeText(activity, "검색 결과 " + finalCount + "개 찾았습니다.", Toast.LENGTH_LONG);
+                                toast.show();
+                            });
+
+                            mRealm.close();
+                        }
+
                     }
                 }.start();
 

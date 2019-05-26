@@ -9,20 +9,18 @@
         android:id="@+id/radioButton_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="해제" />
+        android:text="해제"
+        android:checked="true" />
 
     <RadioButton
         android:id="@+id/radioButton_child"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="어린이용" />
 
     <RadioButton
         android:id="@+id/radioButton_handicapped"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="장애인용" />
 </RadioGroup>

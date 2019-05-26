@@ -35,7 +35,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +60,7 @@ import java.util.Collections;
 
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TMapData tmapData;
     private ListView listView;
     private ListViewAdapter adapter;
+
+
 
     private boolean isPerGranted = false;
     private Realm mRealm;
@@ -105,27 +110,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // 2. BottomAppBar 생성
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_around:
-                        addTMapMarkerItem();
-                        break;
-                    case R.id.action_regional:
-                        if(myMarker!=null)
-                            myMarker.CloseGps();
-                        RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview,mRealm,adapter);
-                        region_dlg.openDialog();
-                        break;
-                    case R.id.action_add:
-                        AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
-                        request_dlg.openDialog();
-                        break;
+        bottomNavigationView.getMenu().getItem(0).setCheckable(false);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
-                }
-                return true;
+            switch (item.getItemId()) {
+                case R.id.action_around:
+                    item.setCheckable(true);
+                    addTMapMarkerItem();
+                    break;
+                case R.id.action_regional:
+                    if(myMarker!=null)
+                        myMarker.CloseGps();
+                    RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview,mRealm,adapter);
+                    region_dlg.openDialog();
+                    break;
+                case R.id.action_add:
+                    AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
+                    request_dlg.openDialog();
+                    break;
+
             }
+            return true;
         });
 
 
@@ -133,8 +138,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.tmap_layout);
         layout.addView(tmapview);
 
-        // 4. Navigation Drawer 생성
+        // 4. Navigation Drawer 생성 및 초기화
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
 
     }
 
@@ -154,7 +160,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 mRealm = Realm.getDefaultInstance();
                 RealmQuery<Toilet> query = mRealm.where(Toilet.class);
+
                 RealmResults<Toilet> toiletList = query.findAll();
+                toiletList = filterMarker(toiletList);
+
+
                 adapter.clear();
                 adapter.notifyDataSetChanged();
                 tmapview.removeAllMarkerItem();
@@ -206,6 +216,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public RealmResults<Toilet> filterMarker(RealmResults<Toilet> toilets){
+        CheckBox checkBox1 = (CheckBox)findViewById(R.id.checkbox_seperate);
+        CheckBox checkBox2 = (CheckBox)findViewById(R.id.checkbox_both);
+        RadioButton radioButton1 = (RadioButton)findViewById(R.id.radioButton_cancel);
+        RadioButton radioButton2 = (RadioButton)findViewById(R.id.radioButton_handicapped);
+        RadioButton radioButton3 = (RadioButton)findViewById(R.id.radioButton_child);
+        RealmQuery<Toilet> result = toilets.where();
+        if(checkBox1.isChecked() && checkBox2.isChecked())
+        {
+            result.equalTo("isToiletBoth",false).or().equalTo("isToiletBoth",true);
+        }
+        else if(checkBox1.isChecked())
+        {
+            result.equalTo("isToiletBoth",false);
+        }
+        else if(checkBox2.isChecked())
+        {
+            result.equalTo("isToiletBoth",true);
+        }
+
+        if(radioButton1.isChecked())
+        {
+            //Do nothing
+        }
+        else if(radioButton2.isChecked()) // 장애인용 쿼리
+        {
+
+            for(int i=0;i<toilets.size();i++)
+            {
+                Toilet toilet = toilets.get(i);
+
+                if(toilet.toilets_count.get(2) != 0 || toilet.toilets_count.get(3) !=0 || toilet.toilets_count.get(7)!=0) {
+
+                    result.or().equalTo("toilet_id", toilet.toilet_id);
+                }
+            }//2,3,7번째
+
+        }
+        else if(radioButton3.isChecked()) // 어린이용 쿼리
+        {
+            //4,5,8번째 index 값 0인지 아닌지 확인(or)
+            for(int i=0;i<toilets.size();i++)
+            {
+                Toilet toilet = toilets.get(i);
+                if(toilet.toilets_count.get(2) != 0 || toilet.toilets_count.get(3) !=0 || toilet.toilets_count.get(7)!=0)
+                {
+                    result.or().equalTo("toilet_id",toilet.toilet_id);
+                }
+            }
+        }
+        toilets = result.findAll();
+        return toilets;
+    }
+
     private void addClickListener() {
         tmapview.setOnClickListenerCallBack(new TMapView.OnClickListenerCallback() {
             @Override
@@ -244,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -341,13 +406,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .check();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-
-
-    }
 
     @Override
     public void onLocationChange(Location location) {
@@ -383,12 +442,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public void onDestroy() {
 
-        super.onDestroy();
-        mRealm.close();
-    }
 }
 
 
