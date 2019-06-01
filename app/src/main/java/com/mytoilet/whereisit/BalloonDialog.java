@@ -20,6 +20,7 @@ import com.example.mytoilet.R;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapMarkerItem;
 import com.skt.Tmap.TMapPoint;
+import com.skt.Tmap.TMapTapi;
 import com.skt.Tmap.TMapView;
 
 import org.xml.sax.SAXException;
@@ -63,7 +64,7 @@ public class BalloonDialog implements Dialog {
         Button navigation = (Button) dlg.findViewById(R.id.button_pathfind);
         navigation.setOnClickListener(v -> {
 
-            TMapPoint point1 = tmapView.getCenterPoint();
+            TMapPoint point1 = tmapView.getCircleFromID("범위").getCenterPoint();
             TMapMarkerItem item1 = new TMapMarkerItem();
             item1.setTMapPoint(point1);
             TMapMarkerItem item2 = tmapView.getMarkerItemFromID(String.valueOf(toilet.toilet_id));
@@ -75,6 +76,14 @@ public class BalloonDialog implements Dialog {
                 e.printStackTrace();
             }
 
+            Activity mainActivity = (Activity)mContext;
+            Button button = (Button)mainActivity.findViewById(R.id.tmap_navigation);
+            button.setVisibility(View.VISIBLE);
+            button.setOnClickListener(v1 -> {
+                TMapTapi api = new TMapTapi(mContext);
+                api.invokeNavigate("목적지",(float)item2.longitude, (float)item2.latitude, 0, true);
+                button.setVisibility(View.GONE);
+            });
             realm.close();
             dlg.dismiss();
 
@@ -119,10 +128,15 @@ public class BalloonDialog implements Dialog {
                     tmapView.addTMapPOIItem(POIItem);
                     Activity activity = (Activity)mContext;
                     ArrayList finalPOIItem = POIItem;
+
                     activity.runOnUiThread(() -> {
                         Toast text = Toast.makeText(activity,"총 " + finalPOIItem.size() + "개 존재합니다.",Toast.LENGTH_LONG);
                         text.show();
+                        Button button = activity.findViewById(R.id.switchListButton);
+                        button.setEnabled(false);
                     });
+
+
                 }
 
             }).start();

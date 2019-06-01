@@ -67,6 +67,18 @@
                     android:layout_marginEnd="0dp"
                     android:onClick="onSwitchButtonClick"
                     android:text="리스트로 전환" />
+
+                <Button
+                    android:id="@+id/tmap_navigation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="277dp"
+                    android:text="네비게이션 안내"
+                    android:visibility="gone"/>
+
             </RelativeLayout>
 
 

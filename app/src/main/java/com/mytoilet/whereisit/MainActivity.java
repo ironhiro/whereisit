@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -14,18 +15,22 @@ import android.graphics.PointF;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -53,10 +59,15 @@ import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
 import com.skt.Tmap.TMapPOIItem;
 import com.skt.Tmap.TMapPoint;
+import com.skt.Tmap.TMapTapi;
 import com.skt.Tmap.TMapView;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 
 import io.realm.Realm;
@@ -75,6 +86,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TMapData tmapData;
     private ListView listView;
     private ListViewAdapter adapter;
+    private Uri mImageCaptureUri;
+    private AddRequestDialog request_dlg;
+    private File file;
+    private static final int PICK_FROM_CAMERA = 0;
+
+    private static final int PICK_FROM_ALBUM = 1;
+
+
+
+
 
 
 
@@ -112,20 +133,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-
+            Button button = findViewById(R.id.switchListButton);
             switch (item.getItemId()) {
                 case R.id.action_around:
-                    item.setCheckable(true);
+
                     addTMapMarkerItem();
+                    button.setEnabled(true);
                     break;
                 case R.id.action_regional:
                     if(myMarker!=null)
                         myMarker.CloseGps();
                     RegionalDialog region_dlg = new RegionalDialog(MainActivity.this, tmapview,mRealm,adapter);
                     region_dlg.openDialog();
+                    button.setEnabled(true);
                     break;
                 case R.id.action_add:
-                    AddRequestDialog request_dlg = new AddRequestDialog(MainActivity.this);
+                    request_dlg = new AddRequestDialog(MainActivity.this);
                     request_dlg.openDialog();
                     break;
 
@@ -140,6 +163,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // 4. Navigation Drawer 생성 및 초기화
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode != RESULT_OK)
+            return;
+
+
+        switch(requestCode)
+        {
+            case PICK_FROM_ALBUM:
+            {
+                mImageCaptureUri = data.getData();
+                ImageView imageView1 = (ImageView)request_dlg.getDialog().findViewById(R.id.imageUpload1);
+                imageView1.setImageURI(mImageCaptureUri);
+                break;
+            }
+
+
+            case PICK_FROM_CAMERA:
+            {
+                if(data.hasExtra("data"))
+                {
+                    Bitmap bitmap = (Bitmap)data.getExtras().get("data");
+                    ImageView imageView = (ImageView)request_dlg.getDialog().findViewById(R.id.imageUpload1);
+                    imageView.setImageBitmap(bitmap);
+                }
+
+                break;
+            }
+
+
+        }
 
 
     }
@@ -260,7 +321,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             for(int i=0;i<toilets.size();i++)
             {
                 Toilet toilet = toilets.get(i);
-                if(toilet.toilets_count.get(2) != 0 || toilet.toilets_count.get(3) !=0 || toilet.toilets_count.get(7)!=0)
+
+                if(toilet.toilets_count.get(4) != 0 || toilet.toilets_count.get(5) !=0 || toilet.toilets_count.get(8)!=0)
                 {
                     result.or().equalTo("toilet_id",toilet.toilet_id);
                 }
@@ -333,20 +395,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void onImageClick(View v) {
-        if (v.getId() == R.id.imageUpload1 || v.getId() == R.id.imageUpload2) {
+        if (v.getId() == R.id.imageUpload1) {
             DialogInterface.OnClickListener cameraListener = (dialog, which) -> {
                 int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA);
                 if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1001);
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, ResultCode.PICK_FROM_CAMERA.ordinal());
+                    try {
+                        doTakePhotoAction();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
             DialogInterface.OnClickListener albumListener = (dialog, which) -> {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                startActivityForResult(intent, ResultCode.PICK_FROM_ALBUM.ordinal());
+                doTakeAlbumAction();
             };
             DialogInterface.OnClickListener cancelListener = (mDialog, which) -> mDialog.dismiss();
             new AlertDialog.Builder(this)
@@ -356,6 +419,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setNegativeButton("사진촬영", cameraListener)
                     .show();
         }
+    }
+
+    private void doTakeAlbumAction() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+
+        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+
+
+        startActivityForResult(intent, PICK_FROM_ALBUM);
+
+
+
+
+    }
+
+    private void doTakePhotoAction() throws IOException {
+
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+
+        startActivityForResult(intent, PICK_FROM_CAMERA);
+
     }
 
 
